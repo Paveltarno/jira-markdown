@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "JiraMarkdown",
-  "version": "0.1",
+  "version": "0.0.1",
 
   "description": "Adds a Markdown editor to Jira",
 
@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "matches":  ["<all_urls>"],
-      "js": ["build/jira-markdown.js"]
+      "js": ["build/index.js"]
     }
   ]
 
