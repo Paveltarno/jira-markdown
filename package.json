@@ -1,0 +1,11 @@
+{
+  "name": "jira-markdown",
+  "version": "0.0.1",
+  "description": "Adds a Markdown editor to Jira",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pavel Tarnopolsky",
+  "license": "ISC"
+}
