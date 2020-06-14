@@ -4,12 +4,15 @@
   "description": "Adds a Markdown editor to Jira",
   "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "parcel build src/index.ts -d build"
   },
   "author": "Pavel Tarnopolsky",
   "license": "ISC",
   "devDependencies": {
+    "parcel": "^1.12.4",
     "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "jira2md": "^2.0.4"
   }
 }

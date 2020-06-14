@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
-      "module": "system",
-      "noImplicitAny": true,
-      "noUnusedLocals": true,
-      "removeComments": true,
-      "preserveConstEnums": true,
-      "outFile": "./build/index.js",
-      "sourceMap": true
+    "baseUrl": "./src",
+    "paths": {
+      "~*": ["./*"]
+    },
   },
   "include": [
       "src/**/*"
   ],
   "exclude": [
       "node_modules",
-      "**/*.spec.ts"
+      "**/*.spec.ts",
+      "build"
   ]
 }
