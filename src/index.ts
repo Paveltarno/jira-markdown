@@ -1,9 +1,10 @@
 import j2m from 'jira2md';
 
 let isInjected = false;
+let isMDModeActive = false;
 
-const toggleVisibility = (elem: HTMLElement) => {
-  elem.style.display = elem.style.display === 'none' ? 'block' : 'none';
+const toggleVisibility = (elem: HTMLElement, isVisible: Boolean) => {
+  elem.style.display = isVisible === true ? 'block' : 'none';
 };
 
 const createControlBar = (
@@ -18,9 +19,11 @@ const createControlBar = (
   `;
 
   // TODO: Make label clickable as well
-  mdControlBar.children[0].addEventListener('click', () => {
-    toggleVisibility(wikiTextArea);
-    toggleVisibility(mdTextArea);
+  mdControlBar.children[0].addEventListener('click', (e) => {
+    const isChecked = (e.target as HTMLInputElement).checked;
+    isMDModeActive = isChecked;
+    toggleVisibility(wikiTextArea, !isMDModeActive);
+    toggleVisibility(mdTextArea, isMDModeActive);
   });
 
   return mdControlBar;
@@ -28,23 +31,26 @@ const createControlBar = (
 
 const injectControl = () => {
   const editField = document.getElementById('description-wiki-edit');
-  // const buttonBar = editField.getElementsByClassName('aui-nav')[0];
+
   const wikiTextArea = document.getElementById(
     'description'
   ) as HTMLTextAreaElement;
 
   // Create text area
-  const mdTextArea = document.createElement('textarea')
-  mdTextArea.style.cssText = wikiTextArea.style.cssText
+  const mdTextArea = document.createElement('textarea');
+  mdTextArea.style.cssText = wikiTextArea.style.cssText;
   mdTextArea.id = '';
-  
+
   mdTextArea.classList.remove(
     'wiki-editor-initialised',
     'wiki-edit-wrapped',
     'wiki-textfield'
   );
 
-  toggleVisibility(mdTextArea);
+  toggleVisibility(mdTextArea, false);
+
+  // Create control bar
+  const controlBar = createControlBar(wikiTextArea, mdTextArea);
 
   mdTextArea.addEventListener('input', (e) => {
     const target = e.target as HTMLTextAreaElement;
@@ -56,22 +62,33 @@ const injectControl = () => {
     mdTextArea.value = j2m.to_markdown(target.value);
   });
 
-  // Create button
-  // const mdButtonItem = document.createElement('li');
+  // Bind to existing controls
+  const textEditorButton = document.querySelector("li[data-mode='source'] > a");
+  const visualEditorButton = document.querySelector(
+    "li[data-mode='wysiwyg'] > a"
+  );
 
-  // mdButtonItem.innerHTML = `<a href="#">Markdown</a>`;
+  const onEditorStateToggle = (isTextMode: boolean) => {
+    (controlBar.children[0] as HTMLInputElement).disabled = !isTextMode;
+    if (isTextMode === true) {
+      mdTextArea.value = j2m.to_markdown(wikiTextArea.value);
+      if (isMDModeActive === true) {
+        mdTextArea.style.display = 'block';
+      }
+    } else {
+      mdTextArea.style.display = 'none';
+      (controlBar.children[0] as HTMLInputElement).disabled = true;
+    }
+  };
 
-  // mdButtonItem.addEventListener('click', () => {
-  //   buttonBar
-  //     .getElementsByClassName('aui-nav-selected')[0]
-  //     .classList.remove('aui-nav-selected');
-  //   mdButtonItem.classList.add('aui-nav-selected');
-  // });
+  visualEditorButton.addEventListener('click', () =>
+    onEditorStateToggle(false)
+  );
+  textEditorButton.addEventListener('click', () => onEditorStateToggle(true));
 
   editField.prepend(mdTextArea);
-  editField.prepend(createControlBar(wikiTextArea, mdTextArea));
+  editField.prepend(controlBar);
 
-  // buttonBar.appendChild(mdButtonItem);
   return true;
 };
 
