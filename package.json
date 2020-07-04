@@ -4,6 +4,7 @@
   "description": "Adds a Markdown editor to Jira",
   "main": "build/index.js",
   "scripts": {
+    "start": "parcel watch src/index.ts -d build",
     "build": "parcel build src/index.ts -d build"
   },
   "author": "Pavel Tarnopolsky",
